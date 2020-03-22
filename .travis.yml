@@ -1,0 +1,34 @@
+version: ~> 1.0
+matrix:
+    include:
+        - os: osx
+          osx_image: xcode7.3
+        - os: linux
+          dist: trusty
+          language: python
+          python: "3.6"
+          addons:
+              apt:
+                  packages:
+                      - libc++-dev
+                      - libc++abi-dev
+
+before_install:
+    - export PATH=$PATH:/Library/Frameworks/Python.framework/Versions/3.7/bin
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+          curl -OL https://www.python.org/ftp/python/3.7.6/python-3.7.6-macosx10.9.pkg
+          && sudo installer -pkg python-3.7.6-macosx10.9.pkg -target /
+          && pip3 install conan
+          && conan config install https://vuo.org/sites/default/files/conan-macos.zip
+      ; fi
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+          pip3 install conan
+          && conan config install https://vuo.org/sites/default/files/conan-linux.zip
+      ; fi
+
+install:
+    - conan user
+
+script:
+    - conan create . vuo/stable
+      && conan upload --remote vuo --all --no-overwrite all --confirm ndi/*
