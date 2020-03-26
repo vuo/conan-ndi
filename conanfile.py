@@ -4,8 +4,8 @@ import platform
 class NdiConan(ConanFile):
     name = 'ndi'
 
-    source_version = '4.1'
-    package_version = '0'
+    source_version = '4.5'
+    package_version = '1'
     version = '%s-%s' % (source_version, package_version)
 
     settings = 'os', 'compiler', 'build_type', 'arch'
@@ -21,7 +21,7 @@ class NdiConan(ConanFile):
         tools.mkdir('include')
         tools.mkdir('lib')
         if platform.system() == 'Darwin':
-            tools.download('http://new.tk/NDISDKAPPLE', 'ndi.pkg', sha256='6181325b0b3938a2023b7ac0002d0543f774711be46a583af5281fc5318a9095')
+            tools.download('http://new.tk/NDISDKAPPLE', 'ndi.pkg', sha256='54d66cc089b6d0b75fb651052ca641d512f5823baa130af3c4287d1bfdc7f55e')
             self.run('pkgutil --expand ndi.pkg ndi')
             with tools.chdir('ndi/NDI_SDK_Component.pkg'):
                 self.run('gzip -dc < Payload | cpio -i')
@@ -36,7 +36,7 @@ class NdiConan(ConanFile):
                             self.run('mv libndi.4.dylib ../../../../../../lib/libndi.dylib')
                             self.run('mv libndi_licenses.txt ../../../../../../%s.txt' % self.name)
         elif platform.system() == 'Linux':
-            tools.download('http://new.tk/NDISDKLINUX', 'ndi.tar.gz', sha256='53d74b3864a8ff86ec9c5edffd60f4c9035caa544c2856b8898cc2210b407142')
+            tools.download('http://new.tk/NDISDKLINUX', 'ndi.tar.gz', sha256='6fb14a3259c5c35041d2a5ded1637067d931af29ab4ee46b7c1455c8eda8cd79')
             tools.untargz('ndi.tar.gz')
             self.run('chmod +x InstallNDISDK_v4_Linux.sh')
             self.run('echo y | ./InstallNDISDK_v4_Linux.sh')
@@ -44,7 +44,7 @@ class NdiConan(ConanFile):
                 with tools.chdir('include'):
                     self.run('mv *.h ../../include')
                 with tools.chdir('lib/x86_64-linux-gnu'):
-                    self.run('mv libndi.so.4.1.6 ../../../lib/libndi.so')
+                    self.run('mv libndi.so.%s.* ../../../lib/libndi.so' % self.source_version)
             with tools.chdir('lib'):
                 patchelf = self.deps_cpp_info['patchelf'].rootpath + '/bin/patchelf'
                 self.run('%s --set-soname libndi.so libndi.so' % patchelf)
