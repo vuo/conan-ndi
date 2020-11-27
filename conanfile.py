@@ -4,8 +4,8 @@ import platform
 class NdiConan(ConanFile):
     name = 'ndi'
 
-    source_version = '4.5'
-    package_version = '1'
+    source_version = '4.5.3'
+    package_version = '0'
     version = '%s-%s' % (source_version, package_version)
 
     settings = 'os', 'compiler', 'build_type', 'arch'
@@ -21,7 +21,7 @@ class NdiConan(ConanFile):
         tools.mkdir('include')
         tools.mkdir('lib')
         if platform.system() == 'Darwin':
-            tools.download('http://new.tk/NDISDKAPPLE', 'ndi.pkg', sha256='54d66cc089b6d0b75fb651052ca641d512f5823baa130af3c4287d1bfdc7f55e')
+            tools.download('http://new.tk/NDISDKAPPLE', 'ndi.pkg', sha256='a41ab2c5b91cf88b29eb0b697c592af0922fa81e8597882db6042e0ef6088ab7')
             self.run('pkgutil --expand ndi.pkg ndi')
             with tools.chdir('ndi/NDI_SDK_Component.pkg'):
                 self.run('gzip -dc < Payload | cpio -i')

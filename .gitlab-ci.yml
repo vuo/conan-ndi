@@ -1,0 +1,11 @@
+build:
+    only:
+        - tags
+    tags:
+        - macOS
+        - Vuo
+    script:
+        - conan config install https://vuo.org/sites/default/files/conan-macos.zip
+        - conan user
+        - conan create . vuo/stable
+        - conan upload --remote vuo --all --no-overwrite all --confirm ndi/*
