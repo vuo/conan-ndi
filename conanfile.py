@@ -28,7 +28,7 @@ class NdiConan(ConanFile):
                 with tools.chdir('NDI SDK for Apple'):
                     with tools.chdir('include'):
                         self.run('mv *.h ../../../../include')
-                    with tools.chdir('lib/x86'):
+                    with tools.chdir('lib/x64'):
                         self.run('install_name_tool -id @rpath/libndi.dylib libndi.4.dylib')
                         self.run('mv libndi.4.dylib ../../../../../lib/libndi.dylib')
                         self.run('mv libndi_licenses.txt ../../../../../%s.txt' % self.name)
