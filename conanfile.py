@@ -28,13 +28,10 @@ class NdiConan(ConanFile):
                 with tools.chdir('NDI SDK for Apple'):
                     with tools.chdir('include'):
                         self.run('mv *.h ../../../../include')
-                    with tools.chdir('redist'):
-                        self.run('pkgutil --expand libNDI_for_Mac.pkg ndi')
-                        with tools.chdir('ndi/libNDIComponent.pkg'):
-                            self.run('gzip -dc < Payload | cpio -i')
-                            self.run('install_name_tool -id @rpath/libndi.dylib libndi.4.dylib')
-                            self.run('mv libndi.4.dylib ../../../../../../lib/libndi.dylib')
-                            self.run('mv libndi_licenses.txt ../../../../../../%s.txt' % self.name)
+                    with tools.chdir('lib/x86'):
+                        self.run('install_name_tool -id @rpath/libndi.dylib libndi.4.dylib')
+                        self.run('mv libndi.4.dylib ../../../../../lib/libndi.dylib')
+                        self.run('mv libndi_licenses.txt ../../../../../%s.txt' % self.name)
         elif platform.system() == 'Linux':
             tools.download('http://new.tk/NDISDKLINUX', 'ndi.tar.gz', sha256='6fb14a3259c5c35041d2a5ded1637067d931af29ab4ee46b7c1455c8eda8cd79')
             tools.untargz('ndi.tar.gz')
