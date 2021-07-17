@@ -4,11 +4,11 @@ import platform
 class NdiConan(ConanFile):
     name = 'ndi'
 
-    source_version = '4.6.0'
+    source_version = '5.0.0'
     package_version = '0'
     version = '%s-%s' % (source_version, package_version)
 
-    settings = 'os', 'compiler', 'build_type', 'arch'
+    settings = 'os'
     url = 'https://www.ndi.tv/sdk/'
     license = 'http://new.tk/ndisdk_license/'
     description = 'IP-based video'
@@ -21,19 +21,20 @@ class NdiConan(ConanFile):
         tools.mkdir('include')
         tools.mkdir('lib')
         if platform.system() == 'Darwin':
-            tools.download('http://new.tk/NDISDKAPPLE', 'ndi.pkg', sha256='812b5ec720fd37d0c4d4c409d04fc8bafdfdfe7a64f786b249eece6feab5b9c7')
+            tools.download('https://downloads.ndi.tv/SDK/NDI_SDK_Mac/Install_NDI_SDK_v5_macOS.pkg', 'ndi.pkg', sha256='0ad784135d9cfb1a924d1be947b1170a6d7d66bfdcedc31638c72d55e2392242')
             self.run('pkgutil --expand ndi.pkg ndi')
             with tools.chdir('ndi/NDI_SDK_Component.pkg'):
                 self.run('gzip -dc < Payload | cpio -i')
-                with tools.chdir('NDI SDK for Apple'):
+                with tools.chdir('NDI SDK for macOS'):
                     with tools.chdir('include'):
                         self.run('mv *.h ../../../../include')
-                    with tools.chdir('lib/x64'):
-                        self.run('install_name_tool -id @rpath/libndi.dylib libndi.4.dylib')
-                        self.run('mv libndi.4.dylib ../../../../../lib/libndi.dylib')
+                    with tools.chdir('lib/macOS'):
+                        self.run('install_name_tool -id @rpath/libndi.dylib libndi.dylib')
+                        self.run('mv libndi.dylib ../../../../../lib/libndi.dylib')
                         self.run('mv libndi_licenses.txt ../../../../../%s.txt' % self.name)
         elif platform.system() == 'Linux':
-            tools.download('http://new.tk/NDISDKLINUX', 'ndi.tar.gz', sha256='6fb14a3259c5c35041d2a5ded1637067d931af29ab4ee46b7c1455c8eda8cd79')
+            # @todo
+            tools.download('…', 'ndi.tar.gz', sha256='…')
             tools.untargz('ndi.tar.gz')
             self.run('chmod +x InstallNDISDK_v4_Linux.sh')
             self.run('echo y | ./InstallNDISDK_v4_Linux.sh')
@@ -46,7 +47,7 @@ class NdiConan(ConanFile):
                 patchelf = self.deps_cpp_info['patchelf'].rootpath + '/bin/patchelf'
                 self.run('%s --set-soname libndi.so libndi.so' % patchelf)
         elif platform.system() == 'Windows':
-            tools.download('http://new.tk/NDISDK', 'ndi.exe', sha256='3e76db0fa71b13b1e8b7118c6334699d70ea00d6c6943b4dfaf1af2e2d215164')
+            tools.download('…', 'ndi.exe', sha256='…')
             # @todo
         else:
             raise Exception('Unknown platform "%s"' % platform.system())
