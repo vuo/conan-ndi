@@ -21,7 +21,8 @@ class NdiTestConan(ConanFile):
 
         # Ensure we only link to system libraries and to libraries we built.
         if platform.system() == 'Darwin':
-            self.run('! (otool -L lib/libndi.dylib | tail +3 | egrep -v "^\s*(/usr/lib/|/System/|@rpath/)")')
+            self.run('! (otool -arch x86_64 -L lib/libndi.dylib | tail +3 | egrep -v "^\s*(/usr/lib/|/System/|@rpath/)")')
+            self.run('! (otool -arch arm64 -L lib/libndi.dylib | tail +3 | egrep -v "^\s*(/usr/lib/|/System/|@rpath/)")')
             self.run('! (otool -L lib/libndi.dylib | fgrep "libstdc++")')
             self.run('! (otool -L lib/libndi.dylib | fgrep "@rpath/libc++.dylib")')  # Ensure this library references the system's libc++.
             self.run('! (otool -l lib/libndi.dylib | grep -A2 LC_RPATH | cut -d"(" -f1 | grep "\s*path" | egrep -v "^\s*path @(executable|loader)_path")')

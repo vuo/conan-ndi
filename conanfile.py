@@ -4,7 +4,7 @@ import platform
 class NdiConan(ConanFile):
     name = 'ndi'
 
-    source_version = '5.0.0'
+    source_version = '5.5.3'
     package_version = '0'
     version = '%s-%s' % (source_version, package_version)
 
@@ -21,11 +21,11 @@ class NdiConan(ConanFile):
         tools.mkdir('include')
         tools.mkdir('lib')
         if platform.system() == 'Darwin':
-            tools.download('https://downloads.ndi.tv/SDK/NDI_SDK_Mac/Install_NDI_SDK_v5_macOS.pkg', 'ndi.pkg', sha256='0ad784135d9cfb1a924d1be947b1170a6d7d66bfdcedc31638c72d55e2392242')
+            tools.download('https://downloads.ndi.tv/SDK/NDI_SDK_Mac/Install_NDI_SDK_v5_Apple.pkg', 'ndi.pkg', sha256='673bd574988719a82f43294dd5cdf5fa75395e3cefc8452d8282f347f6e45903')
             self.run('pkgutil --expand ndi.pkg ndi')
             with tools.chdir('ndi/NDI_SDK_Component.pkg'):
                 self.run('gzip -dc < Payload | cpio -i')
-                with tools.chdir('NDI SDK for macOS'):
+                with tools.chdir('NDI SDK for Apple'):
                     with tools.chdir('include'):
                         self.run('mv *.h ../../../../include')
                     with tools.chdir('lib/macOS'):
